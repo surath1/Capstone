@@ -1,0 +1,99 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+*.pyd
+*.so
+*.dylib
+build/
+dist/
+wheels/
+*.egg-info
+pip-wheel-metadata/
+
+# Virtual environments
+.venv/
+.venv
+venv/
+env/
+ENV/
+.env/
+
+# Environment files
+.env
+.env.*
+.env.local
+.envrc
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pip-log.txt
+
+# Test / coverage
+.coverage
+coverage.xml
+htmlcov/
+.pytest_cache/
+pytestdebug.log
+nosetests.xml
+
+# Type check / caches
+.mypy_cache/
+.pytype/
+.ruff_cache/
+.cache/
+.parcel-cache/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+.ropeproject/
+
+# System files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Databases and local data
+*.sqlite3
+*.db
+*.db-journal
+
+# Node / frontend
+node_modules/
+dist/
+build/
+public/
+*.map
+
+# Terraform / infra
+.terraform/
+
+# Binary / generated artifacts
+*.exe
+*.dll
+*.so
+*.o
+*.obj
+*.class
+
+# Keys / certificates / secrets
+*.pem
+*.key
+*.crt
+
+# Misc
+*.log.*
+*.tmp
+*.temp
+*.bak
+*.swp

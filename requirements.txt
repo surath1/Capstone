@@ -1,0 +1,6 @@
+langchain-core
+dotenv
+pydantic
+logging
+streamlit
+langchain-openai
