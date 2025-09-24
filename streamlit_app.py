@@ -51,31 +51,56 @@ with col1:
     server = st.selectbox("Which server?", ["None","Localhost", "AWS EC2", "Azure App Service", "GCP"], index=0)
     database = st.selectbox("Which database?", ["None", "SQLite", "MySQL", "MongoDB", "PostgreSQL"], index=0)
     # ...existing code...
+    # First click opens an editor dialog so user can review/modify the full agent prompt
     if st.button("Run Full Agent Graph", key="run_full_agent_graph"):
-        with st.spinner("Running agent..."):
-            try:
+       st.session_state["show_prompt_editor"] = True
 
-                # Build a detailed prompt for the agent
-                agent_prompt = (
-                    f"Project Idea: {user_prompt}\n"
-                    f"Programming Language: {language}\n"
-                    f"Backend Framework: {backend}\n"
-                    f"Server: {server}\n"
-                    f"Database: {database}\n"
-                    "If any option is left as 'None', select the best technology or approach based on the project idea. Generate a step-by-step plan and code for this application using the above specifications."   
+    # Show a "dialog" (form) to review/edit the generated agent prompt
+    if st.session_state.get("show_prompt_editor"):
+        st.markdown("### Review & edit agent prompt before running")
+        # construct current default prompt from selected fields
+        default_agent_prompt = (
+            f"Project Idea --> {user_prompt}\n"
+            f"Programming Language --> {language}\n"
+            f"Backend Framework --> {backend}\n"
+            f"Server --> {server}\n"
+            f"Database --> {database}\n"
+            "If any option is left as 'None', select the best technology or approach based on the project idea. Generate a step-by-step plan and code for this application using the above specifications."
+        )
+
+        with st.form("agent_prompt_form"):
+            agent_prompt_editor = st.text_area("Agent Prompt (editable)", default_agent_prompt, height=300, key="agent_prompt_editor")
+            col_a, col_b = st.columns([1, 1])
+            with col_a:
+                submit = st.form_submit_button("Approve & Run")
+            with col_b:
+                cancel = st.form_submit_button("Cancel")
+
+        if cancel:
+            st.session_state["show_prompt_editor"] = False
+
+        if submit:
+            with st.spinner("Running agent..."):
+                try:
+                    result = agent.invoke(
+                        {
+                            "user_prompt": agent_prompt_editor,
+                            "recursion_limit": recursion_limit
+                        }
                     )
-
-                result = agent.invoke(
-                    {
-                        "user_prompt": agent_prompt,
-                        "recursion_limit": recursion_limit
-                    }                    
-                )
-                st.success("Agent completed!")
-                st.json(result)
-                st.session_state["agent_result"] = True
-            except Exception as e:
-                st.error(f"Agent run failed: {e}")
+                    st.success("Agent completed!")
+                    # remove git_logs from top-level dict before showing
+                    try:
+                        cleaned = dict(result) if isinstance(result, dict) else result
+                        if isinstance(cleaned, dict) and "git_logs" in cleaned:
+                            del cleaned["git_logs"]
+                        st.json(cleaned)
+                    except Exception:
+                        st.json(result)
+                    st.session_state["agent_result"] = True
+                    st.session_state["show_prompt_editor"] = False
+                except Exception as e:
+                    st.error(f"Agent run failed: {e}")
     st.markdown("</div>", unsafe_allow_html=True)
 
 
